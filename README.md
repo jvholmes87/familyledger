@@ -1,6 +1,6 @@
 # FamilyLedger
 
-A private household and small-business finance ledger, run with a small team of AI agents and one human approver. FamilyLedger is the product version of **SpendWise**, a personal expense tracker built for UMGC CMSC 495 (Summer 2026).
+A household and small-business finance application with public source and private user financial data, run with a small team of AI agents and one human approver. FamilyLedger is the product version of **SpendWise**, a personal expense tracker built for UMGC CMSC 495 (Summer 2026).
 
 > **Status:** baseline import. This repository starts from the SpendWise code at commit `754c558` (Phase 2: authentication, expense CRUD, income and category management, dashboard, CSV import, row-level security). FamilyLedger work (accounts and entities, multi-currency, budgets, statement import, the agent operating layer) lands in later commits. All data in this repository, its tests, screenshots and demo is synthetic.
 
