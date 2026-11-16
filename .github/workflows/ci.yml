@@ -32,14 +32,46 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+      # Isolated database, authentication and API for this CI job.
+      # No hosted Supabase credentials or real financial records are used.
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase
+        run: supabase start -x studio,imgproxy
+
+      - name: Configure E2E to use local Supabase
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(supabase status -o env)"
+          api_url="$(printf '%s\n' "$status" | sed -n 's/^API_URL=//p' | tr -d '"')"
+          anon_key="$(printf '%s\n' "$status" | sed -n 's/^ANON_KEY=//p' | tr -d '"')"
+          if [[ -z "$api_url" || -z "$anon_key" ]]; then
+            echo "::error::Local Supabase URL or anon key was not available."
+            exit 1
+          fi
+          if [[ "$api_url" != http://127.0.0.1:* && "$api_url" != http://localhost:* ]]; then
+            echo "::error::Refusing non-local Supabase URL for CI."
+            exit 1
+          fi
+          echo "::add-mask::$anon_key"
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$api_url"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$anon_key"
+          } >> "$GITHUB_ENV"
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
       - name: E2E tests
         run: pnpm test:e2e
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Stop local Supabase
+        if: always()
+        run: supabase stop --no-backup
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
