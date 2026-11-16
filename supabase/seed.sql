@@ -1,0 +1,4 @@
+-- Local Supabase development/CI seed file.
+-- Deliberately contains no fixtures: Playwright creates synthetic users and
+-- fixtures during each test. This file satisfies supabase/config.toml's
+-- db.seed.sql_paths setting, without adding any personal financial data.
