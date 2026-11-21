@@ -95,3 +95,7 @@ The full spec is `docs/design-system.md`. Summary you must follow:
 - **Conventional Commits** (`feat:`, `fix:`, `chore:`, `test:`, `docs:`, `ci:`). Commit in small, logical units; tests travel with their code.
 - File layout follows `docs/phase-1-prd.md` §5. Colocate or mirror tests close to the code they cover.
 - Keep changes surgical and scoped to the task. Don't refactor unrelated code.
+
+## Required cybersecurity review
+
+For every public or private repository change, follow [.github/SECURITY-BASELINE.md](.github/SECURITY-BASELINE.md). Run the security checks before pushing and preserve existing project approval, ownership and release rules. Never publish real credentials or private personal data, including in Git history, CI logs or artifacts. A passing scanner does not replace application or publication review.
